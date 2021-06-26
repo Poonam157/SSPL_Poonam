@@ -19,10 +19,11 @@ namespace SSPL_Poonam
 
         protected void btnLogin_Click(object sender, EventArgs e)
         {
+            string strcon = ConfigurationManager.ConnectionStrings["Employee_PoonamConnectionString"].ConnectionString;
+            SqlConnection con = new SqlConnection(strcon);
             try
             {
-                string strcon = ConfigurationManager.ConnectionStrings["Employee_PoonamConnectionString"].ConnectionString;
-                SqlConnection con = new SqlConnection(strcon);
+                
                 SqlCommand cmd = new SqlCommand("select * from TblLogin where UserName=@UserName and Password=@Password", con);
                 cmd.Parameters.AddWithValue("@UserName", txtUserName.Text);
                 cmd.Parameters.AddWithValue("@Password", txtPassword.Text);
@@ -44,10 +45,15 @@ namespace SSPL_Poonam
                     txtPassword.Text = "";
                     txtUserName.Text = "";
                 }
+                
             }
             catch (Exception ex)
             {
                 Response.Write(ex.Message);
+            }
+            finally
+            {
+                con.Close();
             }
         }
 

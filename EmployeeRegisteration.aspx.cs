@@ -16,20 +16,26 @@ namespace SSPL_Poonam
         {
             string strcon = ConfigurationManager.ConnectionStrings["Employee_PoonamConnectionString"].ConnectionString;
             SqlConnection con = new SqlConnection(strcon);
-            SqlDataAdapter sde = new SqlDataAdapter("SELECT  emp.ID, emp.Name, emp.DOB, emp.Email, emp.MobileNo, Des.DesignationDesc FROM TblEmployee emp INNER JOIN TblDesignation Des ON emp.DesignationId = Des.DesignationId order by emp.ID", con);
-            DataSet ds = new DataSet();
-            sde.Fill(ds);
-            GridEmpDetails.DataSource = ds;
-            GridEmpDetails.DataBind();
+            try
+            {
+                SqlDataAdapter sde = new SqlDataAdapter("SELECT  emp.ID, emp.Name, emp.DOB, emp.Email, emp.MobileNo, Des.DesignationDesc FROM TblEmployee emp INNER JOIN TblDesignation Des ON emp.DesignationId = Des.DesignationId order by emp.ID", con);
+                DataSet ds = new DataSet();
+                sde.Fill(ds);
+                GridEmpDetails.DataSource = ds;
+                GridEmpDetails.DataBind();
+            }
+            catch (Exception ex)
+            {
+                Response.Write(ex.Message);
+            }
+            finally
+            {
+                con.Close();
+            }
         }
 
         protected void btnReset_Click(object sender, EventArgs e)
         {
-            //txtName.Text = " ";
-            //txtemail.Text = " ";
-            //txtmobile.Text = " ";
-            //dropdesig.SelectedValue = " ";
-            //calDOB.SelectedDate = DateTime.Today;
             CleartextBoxes(this);
         }
         public void CleartextBoxes(Control parent)
@@ -81,12 +87,15 @@ namespace SSPL_Poonam
                 
             }
             catch (Exception ex)
-            {
-                con.Close();
+            {                
                 Response.Write(ex.Message);
             }
+            finally
+            {
+                con.Close();
+            }
             //GridEmpDetails.DataBind();
-            Session.Clear();
+
             CleartextBoxes(this);
             Response.Redirect("EmployeeRegisteration.aspx");
         }
